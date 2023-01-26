@@ -6,9 +6,9 @@ import { selectIsLoading } from '../../store/nftsReducer';
 import { walletIsConnected } from '../../store/walletReducer';
 
 const Home = () => {
-	const { errorMessage } = useMetamask();
 	const walletConnected = useAppSelector(walletIsConnected);
 	const isLoading = useAppSelector(selectIsLoading);
+	const { errorMessage } = useMetamask();
 
 	if (errorMessage) {
 		return <Alert severity='error'>{errorMessage}</Alert>;

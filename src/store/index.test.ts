@@ -25,7 +25,7 @@ describe('tests for WalletReducer', () => {
 		expect(
 			walletReducer(
 				{ wallet: previousState },
-				connectWallet({ address: 'address1', chainId: '0x1' }),
+				connectWallet({ address: 'address1', chainId: '0x1', id: 'mockId' }),
 			),
 		).toEqual({ wallet: { isConnected: true, address: 'address1', chainId: '0x1' } });
 	});

@@ -9,11 +9,15 @@ const walletSlice = createSlice({
 	name: 'wallet',
 	initialState,
 	reducers: {
-		connectWallet: (state, action: PayloadAction<{ address: string; chainId: string }>): void => {
+		connectWallet: (
+			state,
+			action: PayloadAction<{ address: string; chainId: string; id: string }>,
+		): void => {
 			state.wallet = {
 				isConnected: true,
 				address: action.payload.address,
 				chainId: action.payload.chainId,
+				id: action.payload.id,
 			};
 		},
 		disconnectWallet: (state): void => {

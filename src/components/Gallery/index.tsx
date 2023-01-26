@@ -5,8 +5,8 @@ import { selectNFTs } from '../../store/nftsReducer';
 import { Card } from '../Card';
 
 export const Gallery = () => {
-	const nfts = useAppSelector(selectNFTs);
 	const [displayLiked, setDisplayLiked] = useState(false);
+	const nfts = useAppSelector(selectNFTs);
 	const nftsFiltered = displayLiked ? nfts.filter((nft) => nft.isLiked) : nfts;
 
 	return (

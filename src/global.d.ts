@@ -2,6 +2,7 @@ interface Wallet {
   isConnected: boolean
   chainId?: string
   address?: string
+  id?: string
 }
 
 interface NFT {

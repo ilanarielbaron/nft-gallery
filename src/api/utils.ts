@@ -1,4 +1,11 @@
-export const parseResponse = (response: any[]): NFT[] =>
+export const parseResponse = (
+	response: {
+    id: { tokenId: string }
+    description: string
+    metadata: { image: string }
+    title: string
+  }[],
+): NFT[] =>
 	response.map(
 		(nftResponse) =>
 			({

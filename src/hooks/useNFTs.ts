@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
-import { getNFTsAlkemy } from '../api';
+import { getNFTsAlkemy, updateLikes } from '../api';
 import { fetchNFTs } from '../store/nftsReducer';
 import { useAppDispatch } from './useAppDispatch';
 
 interface UseNFT {
   fetch: (address: string) => Promise<{ error: string | null }>
+  updateLikesDB: (walletId: string, likedNfts: NFT[]) => Promise<void>
 }
 
 export const useNFTs = (): UseNFT => {
@@ -27,7 +28,18 @@ export const useNFTs = (): UseNFT => {
 		[dispatch],
 	);
 
+	const updateLikesDB = useCallback(
+		async (walletId: string, likedNfts: NFT[]): Promise<void> => {
+			await updateLikes(
+				walletId,
+				likedNfts.map((nft) => nft.id),
+			);
+		},
+		[updateLikes],
+	);
+
 	return {
 		fetch,
+		updateLikesDB,
 	};
 };

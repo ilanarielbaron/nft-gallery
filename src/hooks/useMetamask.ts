@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { disconnect, toggleLoading } from '../store/nftsReducer';
+import { connectUser, createUser, getUserByAddress, getUserConnected } from '../api';
+import { disconnect, likeNfts, toggleLoading } from '../store/nftsReducer';
 import { connectWallet, disconnectWallet } from '../store/walletReducer';
 import { useAppDispatch } from './useAppDispatch';
 import { useNFTs } from './useNFTs';
 
 interface UseMetamask {
-  errorMessage: string | null
-  connectHandler: () => void
-  chainChanged: () => void
-  accountChanged: (address: string) => void
+	errorMessage: string | null
+	connectHandler: () => void
+	chainChanged: () => void
+	accountChanged: (address: string) => void
+	syncUser: (address: string, chainId: string, nftsLiked: string[], id: string) => void
+	accountChangeMetamask: (address: string[]) => void
+	userIsConnected: () => void
 }
 
 export const useMetamask = (): UseMetamask => {
@@ -16,16 +20,59 @@ export const useMetamask = (): UseMetamask => {
 	const { fetch } = useNFTs();
 	const dispatch = useAppDispatch();
 
+	const syncUser = async (
+		address: string,
+		chainId: string,
+		nftsLiked: string[],
+		id: string,
+	): Promise<void> => {
+		dispatch(toggleLoading({ isLoading: true }));
+		dispatch(connectWallet({ address, chainId, id }));
+		const { error } = await fetch(address);
+		if (error) {
+			setErrorMessage(error);
+			dispatch(toggleLoading({ isLoading: false }));
+
+			return;
+		}
+
+		dispatch(likeNfts(nftsLiked));
+		dispatch(toggleLoading({ isLoading: false }));
+	};
+
+	const userIsConnected = async (): Promise<void> => {
+		dispatch(toggleLoading({ isLoading: true }));
+		const userConnected = await getUserConnected();
+		if (userConnected) {
+			syncUser(
+				userConnected.address,
+				userConnected.chainId,
+				userConnected.nftsLiked,
+				userConnected.id,
+			);
+		}
+		dispatch(toggleLoading({ isLoading: false }));
+	};
+
+	const accountChangeMetamask = async (address: string[]): Promise<void> => {
+		accountChanged(address[0]);
+	};
+
 	const accountChanged = async (address: string): Promise<void> => {
 		dispatch(toggleLoading({ isLoading: true }));
 		//@ts-expect-error out of typescript scope
 		const chainId = window.ethereum.chainId;
-		dispatch(connectWallet({ address, chainId }));
-		const { error } = await fetch(address);
-		dispatch(toggleLoading({ isLoading: false }));
-		if (error) {
-			setErrorMessage(error);
+		const existingUser = await getUserByAddress(address);
+		let id = '';
+		if (!existingUser) {
+			id = await createUser(address, chainId);
+		} else {
+			id = existingUser.id;
+			await connectUser(existingUser.id);
 		}
+		const nftsLiked = existingUser ? existingUser.nftsLiked : [];
+		dispatch(toggleLoading({ isLoading: false }));
+		syncUser(address, chainId, nftsLiked, id);
 	};
 
 	const chainChanged = (): void => {
@@ -57,5 +104,8 @@ export const useMetamask = (): UseMetamask => {
 		connectHandler,
 		chainChanged,
 		accountChanged,
+		syncUser,
+		accountChangeMetamask,
+		userIsConnected,
 	};
 };

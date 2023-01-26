@@ -21,13 +21,18 @@ export const nftsSlice = createSlice({
 				nft.id === action.payload.id ? { ...nft, isLiked: !nft.isLiked } : nft,
 			);
 		},
+		likeNfts: (state, action: PayloadAction<string[]>): void => {
+			state.nfts = state.nfts.map((nft) =>
+				action.payload.includes(nft.id) ? { ...nft, isLiked: true } : nft,
+			);
+		},
 		toggleLoading: (state, action: PayloadAction<{ isLoading: boolean }>): void => {
 			state.isLoading = action.payload.isLoading;
 		},
 	},
 });
 
-export const { fetchNFTs, disconnect, toggleNFTLike, toggleLoading } = nftsSlice.actions;
+export const { fetchNFTs, disconnect, toggleNFTLike, toggleLoading, likeNfts } = nftsSlice.actions;
 
 export const selectNFTs = (state: RootState) => state.nfts.nfts;
 export const selectLikedNFTs = (state: RootState) => state.nfts.nfts.filter((nft) => nft.isLiked);
