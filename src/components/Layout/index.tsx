@@ -30,7 +30,7 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
               ? connectHandler
               : () => { dispatch(disconnectWallet()); dispatch(disconnect()) }}
           >
-            {isConnected ? 'Disconnect' : 'Connect to Metamask'}
+            {isConnected ? 'Disconnect' : 'Connect'}
           </Button>
         </Toolbar>
       </AppBar>

@@ -1,38 +1,20 @@
-import InfoIcon from '@mui/icons-material/Info';
-import { Box, IconButton, ImageList, ImageListItem, ImageListItemBar, Typography } from "@mui/material";
+import { Box, ImageList, ImageListItem, Typography } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { selectNFTs } from "../../store/nftsReducer";
+import { Card } from '../Card';
 
 export const Gallery = () => {
-  const nfts = useAppSelector(selectNFTs)
+  const nfts = useAppSelector(selectNFTs);
+  const nf = [...nfts, ...nfts];
 
   return (
-    <Box >
-      <ImageList sx={{ width: 500, height: 450 }}>
-        <ImageListItem key="Subheader" cols={2}>
-          <Typography variant="subtitle1">Gallery</Typography>
+    <Box sx={{ marginTop: 5 }}>
+      <ImageList sx={{ height: 800 }}>
+        <ImageListItem key="Subheader" cols={2} sx={{ marginBottom: 1 }}>
+          <Typography variant="subtitle1">My NFTs</Typography>
         </ImageListItem>
-        {nfts.map((nft) => (
-          <ImageListItem key={nft.id}>
-            <img
-              src={nft.imageURL}
-              srcSet={nft.imageURL}
-              alt={nft.title}
-              loading="lazy"
-            />
-            <ImageListItemBar
-              title={nft.title}
-              subtitle={nft.description}
-              actionIcon={
-                <IconButton
-                  sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                  aria-label={`info about ${nft.title}`}
-                >
-                  <InfoIcon />
-                </IconButton>
-              }
-            />
-          </ImageListItem>
+        {nf.map((nft) => (
+          <Card nft={nft} key={nft.id} />
         ))}
       </ImageList>
     </Box>
