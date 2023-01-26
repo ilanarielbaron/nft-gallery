@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '.';
 
-const initialState = {
+export const initialState = {
   nfts: [] as NFT[],
   isLoading: false
 };

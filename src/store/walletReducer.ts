@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './';
 
-const initialState = {
+export const initialState = {
   wallet: { isConnected: false } as Wallet,
 };
 
-export const walletSlice = createSlice({
+const walletSlice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
