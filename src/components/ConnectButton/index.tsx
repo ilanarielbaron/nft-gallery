@@ -14,7 +14,7 @@ export const ConnectButton = () => {
     <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}
       onClick={!isConnected
         ? connectHandler
-        : () => { dispatch(disconnectWallet()); dispatch(disconnect()) }}
+        : (): void => { dispatch(disconnectWallet()); dispatch(disconnect()) }}
     >
       {isConnected ? 'Disconnect' : 'Connect'}
     </Button>

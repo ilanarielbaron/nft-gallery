@@ -13,7 +13,7 @@ export const useNFTs = (): UseNFT => {
   const fetch = useCallback(async (address: string): Promise<{ error: string | null }> => {
     const { nfts, error } = await getNFTsAlkemy(address);
     if (error) {
-      return { error }
+      return { error };
     }
 
     if (nfts) {
@@ -21,7 +21,7 @@ export const useNFTs = (): UseNFT => {
       return { error: null };
     }
 
-    return { error: 'There was an error fetching the NFTs' }
+    return { error: 'There was an error fetching the NFTs' };
   }, [dispatch])
 
   return {
