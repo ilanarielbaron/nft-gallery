@@ -12,6 +12,8 @@ const chainIds: Record<string, string> = {
 	'0x5': 'eth-goerli',
 };
 
+const API_KEY = '63d2fd73a95709597409d029';
+
 export const getNFTsAlkemy = async (address: string): Promise<GetNFTs> => {
 	//@ts-expect-error out of typescript scope
 	const chainId = window.ethereum.chainId;
@@ -48,7 +50,7 @@ export const getUserConnected = async (): Promise<{
 		method: 'GET',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 		},
 	};
 	const fetchURL = `${baseURL}?q={"isConnected":true}`;
@@ -74,7 +76,7 @@ export const getUserByAddress = async (
 		method: 'GET',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 		},
 	};
 	const fetchURL = `${baseURL}?q={"address":"${address}"}`;
@@ -92,7 +94,7 @@ export const createUser = async (address: string, chainId: string): Promise<stri
 		method: 'POST',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -113,7 +115,7 @@ export const connectUser = async (id: string): Promise<void> => {
 		method: 'PATCH',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -133,7 +135,7 @@ export const disconnectUser = async (id: string): Promise<void> => {
 		method: 'PATCH',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -153,7 +155,7 @@ export const updateLikes = async (id: string, likes: string[]): Promise<void> =>
 		method: 'PATCH',
 		headers: {
 			'cache-control': 'no-cache',
-			'x-apikey': '1894464af28350f05cbb057e109ada96046e5',
+			'x-apikey': API_KEY,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
