@@ -1,15 +1,10 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import GlobalStyles from '@mui/material/GlobalStyles';
-import Container from '@mui/material/Container';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { disconnectWallet, walletIsConnected } from '../../store/walletReducer';
 import { useMetamask } from '../../hooks/useMetamask';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { disconnect } from '../../store/nftsReducer';
+import { AppBar, Button, Container, CssBaseline, GlobalStyles, Toolbar, Typography } from '@mui/material';
 
 export const Layout = ({ children }: { children: React.ReactElement }) => {
   const dispatch = useAppDispatch();
@@ -30,7 +25,11 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
           <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             NFT Gallery
           </Typography>
-          <Button variant="outlined" sx={{ my: 1, mx: 1.5 }} onClick={!isConnected ? connectHandler : () => { dispatch(disconnectWallet()) }}>
+          <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}
+            onClick={!isConnected
+              ? connectHandler
+              : () => { dispatch(disconnectWallet()); dispatch(disconnect()) }}
+          >
             {isConnected ? 'Disconnect' : 'Connect to Metamask'}
           </Button>
         </Toolbar>
@@ -41,4 +40,3 @@ export const Layout = ({ children }: { children: React.ReactElement }) => {
     </React.Fragment>
   );
 }
-

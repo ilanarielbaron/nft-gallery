@@ -1,11 +1,12 @@
 import { Alert } from "@mui/material";
+import { Gallery } from "../../components/Gallery";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useMetamask } from "../../hooks/useMetamask";
-import { selectWallet } from "../../store/walletReducer";
+import { walletIsConnected } from "../../store/walletReducer";
 
 const Home = () => {
   const { errorMessage } = useMetamask();
-  const wallet = useAppSelector(selectWallet);
+  const walletConnected = useAppSelector(walletIsConnected);
 
   if (errorMessage) {
     return (
@@ -14,7 +15,9 @@ const Home = () => {
   }
 
   return (
-    <h1>{wallet.address}</h1>
+    <>
+      {walletConnected && <Gallery />}
+    </>
   )
 }
 
