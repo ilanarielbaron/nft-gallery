@@ -4,7 +4,7 @@ This is a NFTs gallery when the user can connect via Metamask to the wallet and 
 
 ## Link to demo
 
-https://as.com
+https://nft-gallery-base.netlify.app/
 
 ## Available Scripts
 
