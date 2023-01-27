@@ -6,6 +6,10 @@ This is a NFTs gallery when the user can connect via Metamask to the wallet and 
 
 https://nft-gallery-base.netlify.app/
 
+## Demo recording
+
+https://user-images.githubusercontent.com/11820295/215115477-2f8f15f2-3f2e-41ec-a671-64ec678c84eb.mov
+
 ## Available Scripts
 
 In the project directory, you can run:
