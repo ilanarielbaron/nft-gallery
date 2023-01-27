@@ -12,11 +12,13 @@ const chainIds: Record<string, string> = {
 	'0x5': 'eth-goerli',
 };
 
+//In a real project the API_KEY should be in a .env file
 const API_KEY = '63d2fd73a95709597409d029';
 
 export const getNFTsAlkemy = async (address: string): Promise<GetNFTs> => {
 	//@ts-expect-error out of typescript scope
 	const chainId = window.ethereum.chainId;
+	//In a real project the API_KEY should be in a .env file
 	const api_key = 'ps5CP8tz3y5oTzMDqwi90FjMjgM-Fe7d';
 	const chain = chainIds[chainId];
 	const baseURL = `https://${chain}.g.alchemy.com/v2/${api_key}/getNFTs/`;
@@ -54,9 +56,7 @@ export const getUserConnected = async (): Promise<{
 		},
 	};
 	const fetchURL = `${baseURL}?q={"isConnected":true}`;
-
 	const response = await fetch(fetchURL, requestOptions).then((data) => data.json());
-
 	if (!response[0]) return null;
 
 	return { ...response[0], ...(response[0]?.['_id'] && { id: response[0]['_id'] }) };
@@ -80,9 +80,7 @@ export const getUserByAddress = async (
 		},
 	};
 	const fetchURL = `${baseURL}?q={"address":"${address}"}`;
-
 	const response = await fetch(fetchURL, requestOptions).then((data) => data.json());
-
 	if (!response[0]) return null;
 
 	return { ...response[0], ...(response[0]?.['_id'] && { id: response[0]['_id'] }) };
