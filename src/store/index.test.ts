@@ -27,7 +27,7 @@ describe('tests for WalletReducer', () => {
 				{ wallet: previousState },
 				connectWallet({ address: 'address1', chainId: '0x1', id: 'mockId' }),
 			),
-		).toEqual({ wallet: { isConnected: true, address: 'address1', chainId: '0x1' } });
+		).toEqual({ wallet: { isConnected: true, address: 'address1', chainId: '0x1', id: 'mockId' } });
 	});
 
 	it('disconnect a wallet', () => {
