@@ -13,5 +13,4 @@ const Layout = ({ children }: { children: React.ReactElement }) => (
 	</React.Fragment>
 );
 
-
 export default React.memo(Layout);

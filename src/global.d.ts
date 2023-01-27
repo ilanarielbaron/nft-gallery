@@ -12,3 +12,16 @@ interface NFT {
   imageURL: string
   isLiked: boolean
 }
+
+interface API {
+  isLoading: boolean;
+  errorMessage?: string
+}
+
+interface User {
+  address: string
+  chainId: string
+  id: string
+  nftsLiked: string[]
+  isConnected: boolean
+} 

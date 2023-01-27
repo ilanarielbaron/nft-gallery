@@ -1,8 +1,8 @@
 import { parseResponse } from './utils';
 
 interface GetNFTs {
-  error?: string
-  nfts?: NFT[]
+	error?: string
+	nfts?: NFT[]
 }
 
 const chainIds: Record<string, string> = {
@@ -14,14 +14,21 @@ const chainIds: Record<string, string> = {
 
 //In a real project the API_KEY should be in a .env file
 const API_KEY = '63d2fd73a95709597409d029';
+const ALKEMY_KEY = 'ps5CP8tz3y5oTzMDqwi90FjMjgM-Fe7d';
+
+const BASE_HEADERS = {
+	'cache-control': 'no-cache',
+	'x-apikey': API_KEY,
+};
+
+const BASE_URL = 'https://gallery-814b.restdb.io/rest/user-state';
 
 export const getNFTsAlkemy = async (address: string): Promise<GetNFTs> => {
 	//@ts-expect-error out of typescript scope
 	const chainId = window.ethereum.chainId;
 	//In a real project the API_KEY should be in a .env file
-	const api_key = 'ps5CP8tz3y5oTzMDqwi90FjMjgM-Fe7d';
 	const chain = chainIds[chainId];
-	const baseURL = `https://${chain}.g.alchemy.com/v2/${api_key}/getNFTs/`;
+	const baseURL = `https://${chain}.g.alchemy.com/v2/${ALKEMY_KEY}/getNFTs/`;
 	const requestOptions = {
 		method: 'GET',
 	};
@@ -40,59 +47,50 @@ export const getNFTsAlkemy = async (address: string): Promise<GetNFTs> => {
 	}
 };
 
-export const getUserConnected = async (): Promise<{
-  address: string
-  chainId: string
-  id: string
-  nftsLiked: string[]
-  isConnected: boolean
-} | null> => {
-	const baseURL = 'https://gallery-814b.restdb.io/rest/user-state';
-	const requestOptions = {
-		method: 'GET',
-		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
-		},
-	};
-	const fetchURL = `${baseURL}?q={"isConnected":true}`;
-	const response = await fetch(fetchURL, requestOptions).then((data) => data.json());
+interface FetchAPIInput {
+	fetchURL: string,
+	options: {
+		method: string, headers: {
+			'cache-control': string;
+			'x-apikey': string;
+		}
+	}
+}
+
+const fetchAPI = async ({ fetchURL, options }: FetchAPIInput) => {
+	const response = await fetch(fetchURL, options).then((data) => data.json());
 	if (!response[0]) return null;
 
 	return { ...response[0], ...(response[0]?.['_id'] && { id: response[0]['_id'] }) };
+};
+
+export const getUserConnected = async (): Promise<User | null> => {
+	const requestOptions = {
+		method: 'GET',
+		headers: BASE_HEADERS,
+	};
+	const fetchURL = `${BASE_URL}?q={"isConnected":true}`;
+
+	return await fetchAPI({ fetchURL, options: requestOptions });
 };
 
 export const getUserByAddress = async (
 	address: string,
-): Promise<{
-  address: string
-  chainId: string
-  id: string
-  nftsLiked: string[]
-  isConnected: boolean
-} | null> => {
-	const baseURL = 'https://gallery-814b.restdb.io/rest/user-state';
+): Promise<User | null> => {
 	const requestOptions = {
 		method: 'GET',
-		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
-		},
+		headers: BASE_HEADERS,
 	};
-	const fetchURL = `${baseURL}?q={"address":"${address}"}`;
-	const response = await fetch(fetchURL, requestOptions).then((data) => data.json());
-	if (!response[0]) return null;
+	const fetchURL = `${BASE_URL}?q={"address":"${address}"}`;
 
-	return { ...response[0], ...(response[0]?.['_id'] && { id: response[0]['_id'] }) };
+	return await fetchAPI({ fetchURL, options: requestOptions });
 };
 
 export const createUser = async (address: string, chainId: string): Promise<string> => {
-	const baseURL = 'https://gallery-814b.restdb.io/rest/user-state';
 	const requestOptions = {
 		method: 'POST',
 		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
+			...BASE_HEADERS,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -102,18 +100,17 @@ export const createUser = async (address: string, chainId: string): Promise<stri
 			chainId,
 		}),
 	};
-	const response = await fetch(baseURL, requestOptions).then((data) => data.json());
+	const response = await fetch(BASE_URL, requestOptions).then((data) => data.json());
 
 	return response['_id'];
 };
 
 export const connectUser = async (id: string): Promise<void> => {
-	const baseURL = `https://gallery-814b.restdb.io/rest/user-state/${id}`;
+	const baseURL = `${BASE_URL}/${id}`;
 	const requestOptions = {
 		method: 'PATCH',
 		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
+			...BASE_HEADERS,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -122,18 +119,15 @@ export const connectUser = async (id: string): Promise<void> => {
 		}),
 	};
 
-	const response = await fetch(baseURL, requestOptions).then((data) => data.json());
-
-	return response;
+	await fetch(baseURL, requestOptions).then((data) => data.json());
 };
 
 export const disconnectUser = async (id: string): Promise<void> => {
-	const baseURL = `https://gallery-814b.restdb.io/rest/user-state/${id}`;
+	const baseURL = `${BASE_URL}/${id}`;
 	const requestOptions = {
 		method: 'PATCH',
 		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
+			...BASE_HEADERS,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
@@ -142,18 +136,15 @@ export const disconnectUser = async (id: string): Promise<void> => {
 		}),
 	};
 
-	const response = await fetch(baseURL, requestOptions).then((data) => data.json());
-
-	return response;
+	await fetch(baseURL, requestOptions).then((data) => data.json());
 };
 
 export const updateLikes = async (id: string, likes: string[]): Promise<void> => {
-	const baseURL = `https://gallery-814b.restdb.io/rest/user-state/${id}`;
+	const baseURL = `${BASE_URL}/${id}`;
 	const requestOptions = {
 		method: 'PATCH',
 		headers: {
-			'cache-control': 'no-cache',
-			'x-apikey': API_KEY,
+			...BASE_HEADERS,
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({

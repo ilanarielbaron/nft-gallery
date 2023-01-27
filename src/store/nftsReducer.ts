@@ -26,16 +26,12 @@ export const nftsSlice = createSlice({
 				action.payload.includes(nft.id) ? { ...nft, isLiked: true } : nft,
 			);
 		},
-		toggleLoading: (state, action: PayloadAction<{ isLoading: boolean }>): void => {
-			state.isLoading = action.payload.isLoading;
-		},
 	},
 });
 
-export const { fetchNFTs, disconnect, toggleNFTLike, toggleLoading, likeNfts } = nftsSlice.actions;
+export const { fetchNFTs, disconnect, toggleNFTLike, likeNfts } = nftsSlice.actions;
 
 export const selectNFTs = (state: RootState) => state.nfts.nfts;
 export const selectLikedNFTs = (state: RootState) => state.nfts.nfts.filter((nft) => nft.isLiked);
-export const selectIsLoading = (state: RootState) => state.nfts.isLoading;
 
 export default nftsSlice.reducer;

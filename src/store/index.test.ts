@@ -3,7 +3,6 @@ import nftsReducer, {
 	disconnect,
 	fetchNFTs,
 	initialState as initialNFTsState,
-	toggleLoading,
 	toggleNFTLike,
 } from './nftsReducer';
 
@@ -43,17 +42,6 @@ describe('tests for WalletReducer', () => {
 describe('tests for NFTsReducer', () => {
 	it('should return the initial state', () => {
 		expect(nftsReducer(undefined, { type: undefined })).toEqual(initialNFTsState);
-	});
-
-	it('toggle loading', () => {
-		const previousState: {
-      nfts: NFT[]
-      isLoading: boolean
-    } = { nfts: [], isLoading: false };
-		expect(nftsReducer(previousState, toggleLoading({ isLoading: true }))).toEqual({
-			...previousState,
-			isLoading: true,
-		});
 	});
 
 	it('disconnect', () => {

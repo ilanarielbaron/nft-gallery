@@ -2,10 +2,11 @@ import { Button } from '@mui/material';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { disconnectWallet, selectWallet, walletIsConnected } from '../../store/walletReducer';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { disconnect, selectIsLoading, toggleLoading } from '../../store/nftsReducer';
+import { disconnect } from '../../store/nftsReducer';
 import { disconnectUser } from '../../api';
 import { connectHandler } from '../../metamask';
 import { useNFTs } from '../../hooks/useNFTs';
+import { selectIsLoading, toggleLoading } from '../../store/apiReducer';
 
 export const ConnectButton = () => {
 	const dispatch = useAppDispatch();

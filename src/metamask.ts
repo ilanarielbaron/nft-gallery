@@ -1,7 +1,8 @@
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { connectUser, createUser, disconnectUser, getUserByAddress, getUserConnected } from './api';
-import { disconnect, likeNfts, toggleLoading } from './store/nftsReducer';
+import { errorMessage, reset, toggleLoading } from './store/apiReducer';
+import { disconnect, likeNfts } from './store/nftsReducer';
 import { connectWallet, disconnectWallet } from './store/walletReducer';
 
 type DispatchType = ThunkDispatch<{
@@ -14,12 +15,11 @@ type DispatchType = ThunkDispatch<{
 	};
 }, undefined, AnyAction> & Dispatch<AnyAction>;
 
-
 const syncUser = async (
-	address: string,
-	chainId: string,
-	nftsLiked: string[],
-	id: string,
+	{ address,
+		chainId,
+		nftsLiked,
+		id }: Omit<User, 'isConnected'>,
 	dispatch: DispatchType,
 	fetch: (address: string) => Promise<{
 		error: string | null;
@@ -29,8 +29,7 @@ const syncUser = async (
 	dispatch(connectWallet({ address, chainId, id }));
 	const { error } = await fetch(address);
 	if (error) {
-		//setErrorMessage(error);
-		dispatch(toggleLoading({ isLoading: false }));
+		dispatch(errorMessage({ message: 'Something went wrong fetching the NFTs' }));
 
 		return;
 	}
@@ -43,18 +42,19 @@ export const userIsConnected = async (dispatch: DispatchType, fetch: (address: s
 	error: string | null;
 }>): Promise<void> => {
 	dispatch(toggleLoading({ isLoading: true }));
-	const userConnected = await getUserConnected();
-	if (userConnected) {
-		syncUser(
-			userConnected.address,
-			userConnected.chainId,
-			userConnected.nftsLiked,
-			userConnected.id,
-			dispatch,
-			fetch,
-		);
+	try {
+		const userConnected = await getUserConnected();
+		if (userConnected) {
+			syncUser(
+				userConnected,
+				dispatch,
+				fetch,
+			);
+		}
+		dispatch(toggleLoading({ isLoading: false }));
+	} catch (err) {
+		dispatch(errorMessage({ message: 'There was a problem with the API' }));
 	}
-	dispatch(toggleLoading({ isLoading: false }));
 };
 
 export const accountChanged = async (address: string, dispatch: DispatchType, fetch: (address: string) => Promise<{
@@ -74,11 +74,11 @@ export const accountChanged = async (address: string, dispatch: DispatchType, fe
 	}
 	const nftsLiked = existingUser ? existingUser.nftsLiked : [];
 	dispatch(toggleLoading({ isLoading: false }));
-	syncUser(address, chainId, nftsLiked, id, dispatch, fetch);
+	syncUser({ address, chainId, nftsLiked, id }, dispatch, fetch);
 };
 
 export const chainChanged = (dispatch: DispatchType): void => {
-	//setErrorMessage(null);
+	dispatch(reset());
 	dispatch(disconnectWallet());
 	dispatch(disconnect());
 };
@@ -95,10 +95,9 @@ export const connectHandler = async (dispatch: DispatchType, fetch: (address: st
 			});
 			await accountChanged(res[0], dispatch, fetch);
 		} catch (err) {
-			console.error(err);
-			//etErrorMessage('There was a problem connecting to MetaMask');
+			dispatch(errorMessage({ message: 'There was a problem connecting to MetaMask' }));
 		}
 	} else {
-		//setErrorMessage('Install MetaMask');
+		dispatch(errorMessage({ message: 'Please install MetaMask' }));
 	}
 };
