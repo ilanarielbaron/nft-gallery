@@ -1,10 +1,20 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import RoutesComponent from './components/Routes';
-import { Layout } from './components/Layout';
-import { useMetamask } from './hooks/useMetamask';
+import Layout from './components/Layout';
+import { accountChanged, chainChanged, userIsConnected } from './metamask';
+import { useAppDispatch } from './hooks/useAppDispatch';
+import { useNFTs } from './hooks/useNFTs';
+import { useAppSelector } from './hooks/useAppSelector';
+import { selectWallet } from './store/walletReducer';
 
 function App() {
-	const { chainChanged, accountChangeMetamask, userIsConnected } = useMetamask();
+	const dispatch = useAppDispatch();
+	const { fetch } = useNFTs();
+	const wallet = useAppSelector(selectWallet);
+
+	const accountChangeMetamask = useCallback(async (address: string[]): Promise<void> => {
+		accountChanged(address[0], dispatch, fetch, wallet.id);
+	}, []);
 
 	// Initialize the application and MetaMask Event Handlers
 	useEffect(() => {
@@ -14,13 +24,8 @@ function App() {
 			window.ethereum.on('accountsChanged', accountChangeMetamask);
 			//@ts-expect-error out of typescript scope
 			window.ethereum.on('chainChanged', chainChanged);
-		}
-	}, [chainChanged, accountChangeMetamask]);
 
-	useEffect(() => {
-		//@ts-expect-error out of typescript scope
-		if (window.ethereum) {
-			userIsConnected();
+			userIsConnected(dispatch, fetch);
 		}
 	}, []);
 

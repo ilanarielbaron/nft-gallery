@@ -1,14 +1,15 @@
 import { Button } from '@mui/material';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { disconnectWallet, selectWallet, walletIsConnected } from '../../store/walletReducer';
-import { useMetamask } from '../../hooks/useMetamask';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { disconnect, selectIsLoading, toggleLoading } from '../../store/nftsReducer';
 import { disconnectUser } from '../../api';
+import { connectHandler } from '../../metamask';
+import { useNFTs } from '../../hooks/useNFTs';
 
 export const ConnectButton = () => {
 	const dispatch = useAppDispatch();
-	const { connectHandler } = useMetamask();
+	const { fetch } = useNFTs();
 	const isConnected = useAppSelector(walletIsConnected);
 	const isLoading = useAppSelector(selectIsLoading);
 	const currentUser = useAppSelector(selectWallet);
@@ -20,7 +21,7 @@ export const ConnectButton = () => {
 			sx={{ my: 1, mx: 1.5 }}
 			onClick={
 				!isConnected
-					? connectHandler
+					? async () => { await connectHandler(dispatch, fetch); }
 					: async (): Promise<void> => {
 						dispatch(toggleLoading({ isLoading: true }));
 						if (currentUser.id && isConnected) {

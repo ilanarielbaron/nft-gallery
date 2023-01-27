@@ -1,18 +1,16 @@
-import { Alert, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Gallery } from '../../components/Gallery';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { useMetamask } from '../../hooks/useMetamask';
 import { selectIsLoading } from '../../store/nftsReducer';
 import { walletIsConnected } from '../../store/walletReducer';
 
 const Home = () => {
 	const walletConnected = useAppSelector(walletIsConnected);
 	const isLoading = useAppSelector(selectIsLoading);
-	const { errorMessage } = useMetamask();
 
-	if (errorMessage) {
-		return <Alert severity='error'>{errorMessage}</Alert>;
-	}
+	// if (errorMessage) {
+	// 	return <Alert severity='error'>{errorMessage}</Alert>;
+	// }
 
 	if (isLoading) {
 		return <CircularProgress sx={{ marginTop: 5 }} />;

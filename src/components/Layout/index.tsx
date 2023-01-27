@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, CssBaseline, GlobalStyles } from '@mui/material';
 import { Header } from '../Header';
 
-export const Layout = ({ children }: { children: React.ReactElement }) => (
+const Layout = ({ children }: { children: React.ReactElement }) => (
 	<React.Fragment>
 		<GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
 		<CssBaseline />
@@ -12,3 +12,6 @@ export const Layout = ({ children }: { children: React.ReactElement }) => (
 		</Container>
 	</React.Fragment>
 );
+
+
+export default React.memo(Layout);
