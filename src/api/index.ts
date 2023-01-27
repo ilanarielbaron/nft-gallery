@@ -64,12 +64,12 @@ const fetchAPI = async ({ fetchURL, options }: FetchAPIInput) => {
 	return { ...response[0], ...(response[0]?.['_id'] && { id: response[0]['_id'] }) };
 };
 
-export const getUserConnected = async (): Promise<User | null> => {
+export const getUserConnected = async (address: string): Promise<User | null> => {
 	const requestOptions = {
 		method: 'GET',
 		headers: BASE_HEADERS,
 	};
-	const fetchURL = `${BASE_URL}?q={"isConnected":true}`;
+	const fetchURL = `${BASE_URL}?q={"isConnected":true, "address":"${address}"}`;
 
 	return await fetchAPI({ fetchURL, options: requestOptions });
 };

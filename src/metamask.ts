@@ -43,13 +43,19 @@ export const userIsConnected = async (dispatch: DispatchType, fetch: (address: s
 }>): Promise<void> => {
 	dispatch(toggleLoading({ isLoading: true }));
 	try {
-		const userConnected = await getUserConnected();
-		if (userConnected) {
-			syncUser(
-				userConnected,
-				dispatch,
-				fetch,
-			);
+		//@ts-expect-error out of typescript scope
+		const accounts = await window.ethereum.request({
+			method: 'eth_accounts',
+		});
+		if (accounts?.length > 0) {
+			const userConnected = await getUserConnected(accounts[0]);
+			if (userConnected) {
+				syncUser(
+					userConnected,
+					dispatch,
+					fetch,
+				);
+			}
 		}
 		dispatch(toggleLoading({ isLoading: false }));
 	} catch (err) {
